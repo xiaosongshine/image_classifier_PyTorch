@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/anaconda/envs/TORCH/bin/python",
+    "git.ignoreLimitWarning": true
+}
