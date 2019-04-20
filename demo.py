@@ -63,8 +63,9 @@ def get_model(num_classes):
     )
     return(model)
 
-def train(epochs):
 
+def train(epochs):
+ 
     model = get_model(config.num_classes)
     print(model)
     loss_f = t.nn.CrossEntropyLoss()
@@ -94,7 +95,7 @@ def train(epochs):
             loss = loss_f(y_,pre_y)
             #print(y_.shape)
             acc = t.sum(pre_y_ == pre_y)
-
+ 
             loss.backward()
             opt.step()
             opt.zero_grad()
@@ -110,6 +111,7 @@ def train(epochs):
         time_start = time.time()
         
         model.train(False)
+        
         for batch, datas in tqdm(enumerate(iter(dataloader["test"]))):
             x,y = datas
             if (config.use_gpu):
@@ -121,21 +123,19 @@ def train(epochs):
             #print(y_.shape)
             loss = loss_f(y_,pre_y)
             acc = t.sum(pre_y_ == pre_y)
-
-            loss.backward()
-            opt.step()
-            opt.zero_grad()
+ 
             if(config.use_gpu):
                 loss = loss.cpu()
                 acc = acc.cpu()
-
+ 
             test_loss.append(loss.data)
             test_acc.append(acc)
-        print("Batch {}, Test loss:{:.4f}, Test acc:{:.4f}".format(batch+1,np.mean(test_loss)/config.batch_size,np.mean(test_acc)/config.batch_size))
-
+        time_end = time.time()
+        print("Batch {}, Test loss:{:.4f}, Test acc:{:.4f}, Time :{}".format(batch+1,np.mean(test_loss)/config.batch_size,np.mean(test_acc)/config.batch_size,(time_end-time_start)))
+        time_start = time.time()
         t.save(model,str(epoch+1)+"ttmodel.pkl")
-
-
-
+ 
+ 
+ 
 if __name__ == "__main__":
     train(config.epochs)
